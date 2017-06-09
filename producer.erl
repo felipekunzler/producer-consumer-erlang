@@ -4,12 +4,12 @@
 start(Workers, _, _) when Workers =< 0 ->
   workers_running;
 
-%%% Cria N processos recursivamente executando a função produce.
+%% Cria N processos recursivamente executando a função produce.
 start(Workers, Interval, Dest) ->
   spawn_link(producer, produce, [Dest, Interval, 0]),
   start(Workers - 1, Interval, Dest).
 
-%%% Envia mensagens para o loadbalancer a cada X ms recursivamente.
+%% Envia mensagens para o loadbalancer a cada X ms recursivamente.
 produce(Dest, Interval, Count) ->
   timer:sleep(Interval),
   Val = pid_to_list(self()) ++ " " ++ integer_to_list(Count) 

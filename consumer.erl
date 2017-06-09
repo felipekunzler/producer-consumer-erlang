@@ -23,7 +23,7 @@ consume(Interval) ->
   end,
   consume(Interval).
 
-%%% Gera o hash md5 de uma string
+%% Gera o hash md5 de uma string
 md5(Val) ->
   <<X:128/big-unsigned-integer>> = erlang:md5(Val),
   lists:flatten(io_lib:format("~32.16.0b", [X])).
