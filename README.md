@@ -4,7 +4,7 @@ The program consists of many producers and consumers messaging each other concur
 ## Building
 `erl`
 
-`c(consumer), c(producer), c(loadbalancer), c(main).`
+`c(consumer), c(producer), c(loadbalancer), c(watcher), c(main).`
 
 ## Running
 `main:start({producer, 4, 1000}, {consumer, 2, 1000}).`

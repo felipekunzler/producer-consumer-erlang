@@ -5,6 +5,7 @@ start(Workers, Interval) ->
   start(Workers, Interval, []).
 
 start(Workers, _, Pids) when Workers =< 0 ->
+  io:format("~p~n", [{consumers_running, [pid_to_list(I) || I <- Pids]}]),
   Pids;
 
 %% Cria N processos recursivamente e armazena o Pid na lista Pids,

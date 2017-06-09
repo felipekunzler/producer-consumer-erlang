@@ -8,7 +8,7 @@ start({producer, ProducerWorkers, ProducerInterval},
   ConsumerPids = consumer:start(ConsumerWorkers, ConsumerInterval),
   LoadbalancerPid = loadbalancer:start(ConsumerPids),
   producer:start(ProducerWorkers, ProducerInterval, LoadbalancerPid),
-  {consumers_running, [pid_to_list(I) || I <- ConsumerPids]}.
+  ok.
 
 stop() ->
   % Para o processo principal e seus links (producers, consumers e loadbalancer)

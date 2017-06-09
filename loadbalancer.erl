@@ -1,17 +1,23 @@
 -module(loadbalancer).
--export([start/1, accept/1, watch_start/1, watch_stop/0]).
+
+-export([start/1, accept/1, register_consumers/1]).
 
 start(Consumers) ->
-  spawn_link(loadbalancer, accept, [Consumers]).
+  Pid = spawn_link(loadbalancer, accept, [Consumers]),
+  register(load_balancer, Pid),
+  Pid.
 
 %% Recebe mensagens dos produtores, e envia para o consumidor
 %% com menos mensagens na mailbox
+%% Também aceita novos consumidores assincronamente
 accept(Consumers) ->
   receive
+    {register_consumers, Pids} ->
+      accept(Consumers ++ Pids);
     Val ->
-      balance(Consumers) ! Val
-  end,
-  accept(Consumers).
+      balance(Consumers) ! Val,
+      accept(Consumers)
+  end.
 
 %% Dado uma lista de Pids, retorna aquele com menos mensagens
 %% na sua mailbox.
@@ -33,19 +39,7 @@ balance(Consumers, Consumer, MinLen) ->
       balance(ConsumersReduced, Consumer, MinLen)
   end.
 
-%% Função externa que mostra o tamanho da mailbox de cada processo
-watch_start(Pids) ->
-  register(watcher, self()),
-  watch(Pids).
-
-watch(Pids) ->
-  timer:sleep(50),
-  io:format(os:cmd(clear)),
-  lists:foreach(fun(Pid) ->
-                  Len = process_info(list_to_pid(Pid), message_queue_len),
-                  io:format("~s -> ~w~n", [Pid, Len])
-                end, Pids),
-  watch(Pids).
-
-watch_stop() ->
-  exit(whereis(watcher), stop).
+%% Função externa que registra novos consumidores assincronamente
+register_consumers(PidsStr) ->
+  Pids = [list_to_pid(I) || I <- PidsStr],
+  whereis(load_balancer) ! {register_consumers, Pids}.
