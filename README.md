@@ -9,7 +9,7 @@ The program consists of many producers and consumers messaging each other concur
 ## Running
 `main:start({producer, 4, 1000}, {consumer, 2, 1000}).`
 
-Where: `{producer, ProducerWorkers, ProducerInterval},
- {consumer, ConsumerWorkers, ConsumerInterval})`
+Where: 
+`{producer, NumWorkers, JobIntervalms}, {consumer, NumWorkers, JobIntervalms}`
 
 The program can be stopped with `main:stop().`
